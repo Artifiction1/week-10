@@ -3,21 +3,25 @@ import Weather from "./Weather";
 
 
 class City extends Component {
-    FetchCity = async () => {
+    state = {
+        CityWeather: null
+    }
+    FetchWeather = async () => {
         try {
-            const resolve = await fetch('http://api.openweathermap.org/geo/1.0/direct?q=' + this.props.city + '&limit=5&appid=6d9fe25d65ac8205827fa1806cbe61d9')
-            const city = await resolve.json()
-            console.log(city)
-            return city
+            const resolve = await fetch('https://api.openweathermap.org/data/2.5/weather?q='+this.props.city+'&appid=5d4ae5620571d18b7b72cb9df96681ee')
+            const weather = await resolve.json()
+            console.log(weather)
+            console.log(resolve)
+            await this.setState({CityWeather: weather})
+            console.log(this.state.CityWeather)
         }
         catch (error) {
             console.log(error)
         }
     }
-    componentDidMount = () => {
-        this.City = this.FetchCity()
+    componentDidMount() {
+        this.FetchWeather()
     }
-
     render() {
         return (
             <Weather name={this.City} />

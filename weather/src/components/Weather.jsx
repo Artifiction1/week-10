@@ -1,38 +1,43 @@
 import { Component } from "react";
 import Card from 'react-bootstrap/Card'
 import Col from 'react-bootstrap/Col'
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 
 
-class Weather extends Component {
-
-    FetchWeather = async () => {
+const Weather = () => {
+    const params = useParams()
+    let City = params.city
+    let [CityWeather,setCityWeather] = useState(null)
+    const FetchWeather = async (City) => {
         try {
-            const resolve = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + this.props.name.lat + '&lon=' + this.props.name.lat + '&appid=6d9fe25d65ac8205827fa1806cbe61d9')
+            const resolve = await fetch('https://api.openweathermap.org/data/2.5/weather?q='+City+'&appid=5d4ae5620571d18b7b72cb9df96681ee')
             const weather = await resolve.json()
-            console.log(weather)
-            console.log(resolve)
-            return weather
+            setCityWeather(weather)
+            console.log(this.state.CityWeather)
         }
         catch (error) {
             console.log(error)
         }
     }
-    componentDidMount() {
-        this.CityWeather = this.FetchWeather()
-    }
-    render() {
+    useEffect(()=>{
+        FetchWeather(City)
+    },[City])
+    
+        if(CityWeather !== null){
         return (
             <Col>
                 <Card style={{ width: '18rem' }}>
                     <Card.Body>
-                        <Card.Title>{this.CityWeather.name}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">{this.CityWeather.main.temp}</Card.Subtitle>
-                        <Card.Link href="#">Card Link</Card.Link>
-                        <Card.Link href="#">Another Link</Card.Link>
+                        <Card.Title>{CityWeather.name}</Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted"> temp: {Math.floor(CityWeather.main.temp - 272.15)} C</Card.Subtitle>
+                        <Link to={"/City"+CityWeather.name}>more details</Link>
                     </Card.Body>
-                </Card></Col>
+                </Card>
+                </Col>
         )
 
-    }
-}
+    }}
+
 export default Weather
